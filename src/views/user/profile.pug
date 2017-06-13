@@ -1,0 +1,9 @@
+extends ../internal-layout
+
+block page-content
+  div.panel.panel-default
+    div.panel-heading Profile
+    div.panel-body 
+      ul
+        li Name: #{user.name}
+        li Email: #{user.email}

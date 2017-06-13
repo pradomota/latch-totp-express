@@ -1,0 +1,20 @@
+extends ../layout
+
+block content
+  div.panel.col-xs-12.col-sm-3.col-sm-offset-4
+    div.panel-body
+      form(method='post' action='')
+        div.form-group(class=(errors && errors.email ? 'has-error' : ''))
+          input#email.form-control(type='text', placeholder='Username' name='email' required='true' value=(user ? user.email : ''))
+          if errors && errors.email
+            div.help-block.with-errors=errors.email.msg
+        div.form-group(class=(errors && errors.password ? 'has-error' : ''))
+          input#password.form-control(type='password', placeholder='Password' name='password' required='true')
+          if errors && errors.password
+            div.help-block.with-errors=errors.password.msg
+        if errors && errors.auth
+          div.has-error
+            div.help-block.with-errors=errors.auth.msg
+        button.btn.btn-default.full-width(type='submit') Login
+      hr
+      a.btn.btn-primary.full-width(type='submit')(href='/sign-up') Register
