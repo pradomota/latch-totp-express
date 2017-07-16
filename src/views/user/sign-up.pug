@@ -5,7 +5,7 @@ block content
     div.panel-body
       form(method='post' action='')
         div.form-group(class=(errors && errors.name ? 'has-error' : ''))
-          input#name.form-control(type='text', placeholder='Name' name='name' required='true' value=(user ? user.email : ''))
+          input#name.form-control(type='text', placeholder='Name' name='name' required='true' value=(user ? user.name : ''))
           if errors && errors.name
             div.help-block.with-errors=errors.name.msg
         div.form-group(class=(errors && errors.email ? 'has-error' : ''))

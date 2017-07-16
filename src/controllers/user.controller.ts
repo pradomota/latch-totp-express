@@ -61,7 +61,7 @@ exports.postSignup = (req: Request, res: Response, next: NextFunction) => {
 
   req.assert('name', 'Name must not be empty').notEmpty();
   req.assert('email', 'Invalid email format').isEmail();
-  req.assert('password', 'Password must be at least 8 characters long').len(8);
+  req.assert('password', 'Password must be at least 8 characters long').len(<ExpressValidator.Options.MinMaxOptions>{ min: 8 });
   req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
 
   req.sanitize('name').escape();
@@ -100,9 +100,12 @@ exports.postSignup = (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-exports.getLogout = (req: Request, res: Response) => {
+exports.getLogout = (req: Request, res: Response, next: NextFunction) => {
   req.logout();
-  res.redirect('/login');
+  req.session.destroy(function (err: Error) {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
 };
 
 exports.getProfile = (req: Request, res: Response) => {

@@ -27,7 +27,7 @@ export function setup(passport: PassportStatic): void {
       User.findOne({ email: email.toLowerCase() }, (err, user: any) => {
         if (err) { return done(err); }
         if (!user) {
-          return done(null, false, { message: `Email ${email} not found.` });
+          return done(null, false, { message: `Invalid email or password.` });
         }
         user.checkPassword(password, (err: Error, isMatch: boolean) => {
           if (err) { return done(err); }
@@ -45,7 +45,7 @@ export let isAuthenticated = (req: Request, res: Response, next: NextFunction) =
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect('/login');
+  return res.redirect('/login');
 };
 
 export let isNotLogged = (req: Request, res: Response, next: NextFunction) => {

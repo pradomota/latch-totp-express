@@ -15,3 +15,7 @@ a {
 .full-width {
   width: 100%;
 }
+
+form-inline .form-group {
+  margin-right: 7px;
+}
