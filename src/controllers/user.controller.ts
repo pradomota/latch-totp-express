@@ -77,22 +77,23 @@ exports.postSignup = (req: Request, res: Response, next: NextFunction) => {
     options.user = user;
 
     if (result.isEmpty()) {
-      User.findOne({ email: req.body.email}, (err: Error, existingUser: boolean) => {
-        if (err) {
-          return next(err);
-        } else if (existingUser) {
-          options.errors = { email: { param: 'email', msg: 'Account with that email address already exists'}};
-          res.render('user/sign-up', options);
-        } else {
-          user.save((err: Error) => {
-            if (err) { return next(err); }
-            req.logIn(user, (err: Error) => {
-              if (err) { return next(err); }
-                res.redirect('/');
-              });
-          });
-        }
-      });
+      User.findOne({ email: req.body.email })
+          .then((existingUser: UserModel) => {
+            if (existingUser) {
+              options.errors = { email: { param: 'email', msg: 'Account with that email address already exists' } };
+              res.render('user/sign-up', options);
+            } else {
+              user.save()
+                  .then(() => {
+                    req.logIn(user, (err: Error) => {
+                      if (err) { return next(err); }
+                      res.redirect('/');
+                    });
+                  })
+                  .catch((err: Error) => next(err));
+            }
+          })
+          .catch((err: Error) => next(err));
     } else {
       options.errors = result.mapped();
       res.render('user/sign-up', options);
