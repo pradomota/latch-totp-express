@@ -5,6 +5,7 @@ import { default as User, UserModel } from '../models/user.model';
 import { Request, Response, NextFunction } from 'express';
 
 const LocalStrategy = passportLocal.Strategy;
+const CustomStrategy = require('passport-custom').Strategy;
 
 export function setup(passport: PassportStatic): void {
 
@@ -39,11 +40,32 @@ export function setup(passport: PassportStatic): void {
       });
     })
   );
+
+  passport.use('local-totp', new CustomStrategy(
+    function(req: Request, done: any) {
+      if (req.user && req.user.checkTOTP(req.body.code)) {
+        done(null, req.user);
+      } else {
+        done(null, null, { message: 'Invalid code'});
+      }
+    }
+  ));
 }
 
 export let isAuthenticated = (req: Request, res: Response, next: NextFunction) => {
   if (req.isAuthenticated()) {
-    return next();
+    if (!req.user.totp.active || req.session.twoFactor) {
+      return next();
+    } else {
+      return res.redirect('/two-factor');
+    }
+  }
+  return res.redirect('/login');
+};
+
+export let isTwoFactorNeeded = (req: Request, res: Response, next: NextFunction) => {
+  if (req.isAuthenticated()) {
+      return next();
   }
   return res.redirect('/login');
 };

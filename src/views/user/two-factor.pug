@@ -1,0 +1,11 @@
+extends ../layout
+
+block content
+  div.panel.col-xs-12.col-sm-3.col-sm-offset-4
+    div.panel-body
+      form(method='post' action='')
+        div.form-group(class=(errors && errors.code ? 'has-error' : ''))
+          input#code.form-control(type='text', placeholder='Username' name='code' required='true' value=(user ? user.code : ''))
+          if errors && errors.code
+            div.help-block.with-errors=errors.code.msg
+        button.btn.btn-default.full-width(type='submit') Verify
